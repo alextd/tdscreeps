@@ -27,7 +27,8 @@ module.exports = function (/** @type Creep*/ creep)
 		var guards = [];
 		for(var name of guardNames)
 		{
-			guards.push(Game.creeps[name]);
+			if(Game.creeps[name] != undefined)
+				guards.push(Game.creeps[name]);
 		}
 		creep.moveTo(room.averagePos(guards));
 	}
