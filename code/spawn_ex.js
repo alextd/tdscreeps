@@ -1,5 +1,6 @@
 var workerParts = [MOVE,WORK,WORK,CARRY];
-var gaurdParts = [TOUGH,TOUGH,TOUGH,TOUGH,MOVE,MOVE,ATTACK,ATTACK];
+var guardParts = [TOUGH,TOUGH,TOUGH,TOUGH,MOVE,MOVE,ATTACK,ATTACK];
+var healerParts = [MOVE,HEAL];
 
 Spawn.prototype.init = function()
 {
@@ -9,6 +10,7 @@ Spawn.prototype.init = function()
 	this.memory.sources = {};
 	this.memory.workers = [];
 	this.memory.guards = [];
+	this.memory.healers = [];
 }
 
 Spawn.prototype.selectSource = /** @return Source */ function()
@@ -27,7 +29,12 @@ Spawn.prototype.think = function()
 	//decide it
 	var role = "worker";
 	if(this.memory.workers.length > this.memory.guards.length)
-		role = "guard";
+	{
+		if(this.memory.guards.length < this.memory.healers.length*3 + 2) //After 2, then every 3
+			role = "guard";
+		else
+			role = "healer";
+	}
 
 	// do it
 	if(role == "worker")
@@ -48,14 +55,27 @@ Spawn.prototype.think = function()
 	}
 	else if(role == "guard")
 	{
-		if(this.canCreateCreep(gaurdParts) == OK)
+		if(this.canCreateCreep(guardParts) == OK)
 		{
-			var guardName = this.createCreep(gaurdParts,
-					{"role": role, "job": "guard", "homeid": this.id});
+			var guardName = this.createCreep(guardParts,
+					{"role": role, "homeid": this.id});
 
 			if (typeof guardName === "string")
 			{
 				this.memory.guards.push(guardName);
+			}
+		}
+	}
+	else if(role == "healer")
+	{
+		if(this.canCreateCreep(healerParts) == OK)
+		{
+			var healerName = this.createCreep(healerParts,
+					{"role": role, "homeid": this.id});
+
+			if (typeof healerName === "string")
+			{
+				this.memory.healers.push(healerName);
 			}
 		}
 	}
