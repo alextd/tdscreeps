@@ -7,13 +7,19 @@ Spawn.prototype.init = function()
 	if(this.memory.init)	return;
 
 	this.memory.init = true;
-	this.memory.sources = {};
 	this.memory.workers = [];
 	this.memory.carriers = [];
 	this.memory.harvesters = [];
 	this.memory.builders = [];
 	this.memory.guards = [];
 	this.memory.healers = [];
+	this.memory.workerSpawnedCount = 0;
+	
+	this.memory.sources = {};
+	for(source in this.room.find(FIND_SOURCES))
+	{
+		this.memory.sources[source.id] = [];
+	}
 }
 Spawn.prototype.forget = function(name)
 {
@@ -51,6 +57,8 @@ Spawn.prototype.think = function()
 		else
 			role = "healer";
 	}
+	if(this.memory.workers.length > 8)	//9 is too many
+		return;
 
 	// do it
 	if(role == "worker")
@@ -59,7 +67,7 @@ Spawn.prototype.think = function()
 		if(this.canCreateCreep(workerParts) == OK)
 		{
 			var targetSource = this.selectSource();
-			var cycle = this.memory.workers.length % 4;
+			var cycle = this.memory.workerSpawnedCount++ % 4;
 			var job = cycle == 2 ? "upgrade" : cycle == 3 ? "build" : "source";
 			var workerName = this.createCreep(workerParts,
 					{"role": role, "job": job, "sourceid": targetSource.id, "homeid":  this.id});

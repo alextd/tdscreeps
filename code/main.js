@@ -43,7 +43,6 @@ fillLists = function (spawn)
 {
 	spawn.memory.init = false;
 	spawn.init();
-	var targetSource = spawn.selectSource();
 	
 	for(var name in Memory.creeps)
 	{
@@ -61,7 +60,7 @@ fillLists = function (spawn)
 			}
 			if(creep.memory.role == "worker")
 			{
-				spawn.memory.sources[targetSource.id].push(creep.name)
+				spawn.memory.sources[creep.memory.sourceid].push(creep.name)
 			}
 		}
 	}
