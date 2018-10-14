@@ -7,6 +7,7 @@ Spawn.prototype.init = function()
 	if(this.memory.init)	return;
 
 	this.memory.init = true;
+	this.memory.sources = {};
 	this.memory.workers = [];
 	this.memory.carriers = [];
 	this.memory.harvesters = [];
@@ -16,15 +17,16 @@ Spawn.prototype.init = function()
 }
 Spawn.prototype.forget = function(name)
 {
-    function matches(n) {
-        return n == name;
-    }
 	this.memory.workers = this.memory.workers.filter(n => n != name);
 	this.memory.carriers = this.memory.carriers.filter(n => n != name);
 	this.memory.harvesters = this.memory.harvesters.filter(n => n != name);
 	this.memory.builders = this.memory.builders.filter(n => n != name);
 	this.memory.guards = this.memory.guards.filter(n => n != name);
 	this.memory.healers = this.memory.healers.filter(n => n != name);
+	for(sourceid in this.memory.sources)
+	{
+		this.memory.sources[sourceid] = this.memory.sources[sourceid].filter(n => n != name);
+	}
 }
 
 Spawn.prototype.selectSource = /** @return Source */ function()

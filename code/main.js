@@ -41,27 +41,28 @@ cleanLists = function (spawn)
 }
 fillLists = function (spawn) 
 {
-	spawn.memory.workers = [];
-	spawn.memory.carriers = [];
-	spawn.memory.harvesters = [];
-	spawn.memory.builders = [];
-	spawn.memory.guards = [];
-	spawn.memory.healers = [];
+	spawn.memory.init = false;
+	spawn.init();
+	var targetSource = spawn.selectSource();
 	
 	for(var name in Memory.creeps)
 	{
 		var creep = Game.creeps[name];
 		if(creep)
 		{
-        	switch(creep.memory.role)
-        	{
-        		case "worker": spawn.memory.workers.push(name); break;
-        		case "carrier": spawn.memory.carriers.push(name); break;
-        		case "harvester": spawn.memory.harvesters.push(name); break;
-        		case "builder": bspawn.memory.builders.push(name); break;
-        		case "guard": spawn.memory.guards.push(name); break;
-        		case "healer": spawn.memory.healers.push(name); break;
-        	}
+			switch(creep.memory.role)
+			{
+				case "worker": spawn.memory.workers.push(name); break;
+				case "carrier": spawn.memory.carriers.push(name); break;
+				case "harvester": spawn.memory.harvesters.push(name); break;
+				case "builder": bspawn.memory.builders.push(name); break;
+				case "guard": spawn.memory.guards.push(name); break;
+				case "healer": spawn.memory.healers.push(name); break;
+			}
+			if(creep.memory.role == "worker")
+			{
+				spawn.memory.sources[targetSource.id].push(creep.name)
+			}
 		}
 	}
 }
