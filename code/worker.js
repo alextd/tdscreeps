@@ -1,8 +1,5 @@
 module.exports = function (creep)
 {
-	switch(creep.memory.job)
-	{module.exports = function (creep)
-{
     //step1
 	switch(creep.memory.job)
 	{
@@ -39,26 +36,6 @@ module.exports = function (creep)
             }
             if (creep.carry.energy == 0)
                 creep.memory.job = "upgrade";
-	}
-
-}
-		case "source":
-			if(creep.carry.energy < creep.carryCapacity)
-			{
-				var source = Game.getObjectById(creep.memory.jobid);
-				if(creep.harvest(source) == ERR_NOT_IN_RANGE)
-				{
-					creep.moveTo(source);
-				}
-			}
-			else
-			{
-				var spawn = Game.getObjectById(creep.memory.homeid);
-				if(creep.transferEnergy(spawn) == ERR_NOT_IN_RANGE)
-				{
-					creep.moveTo(spawn);
-				}
-			}
 	}
 
 }
