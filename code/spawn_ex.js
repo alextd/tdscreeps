@@ -7,17 +7,24 @@ Spawn.prototype.init = function()
 	if(this.memory.init)	return;
 
 	this.memory.init = true;
-	this.memory.sources = {};
 	this.memory.workers = [];
+	this.memory.carriers = [];
+	this.memory.harvesters = [];
+	this.memory.builders = [];
 	this.memory.guards = [];
 	this.memory.healers = [];
 }
-
-Spawn.prototype.forget = function(creep)
+Spawn.prototype.forget = function(name)
 {
-    this.memory.workers = this.memory.workers.filter(function(val, n, a){ return val != creep});
-    this.memory.guards = this.memory.guards.filter(function(val, n, a){ return val != creep});
-    this.memory.healers = this.memory.healers.filter(function(val, n, a){ return val != creep});
+    function matches(n) {
+        return n == name;
+    }
+	this.memory.workers = this.memory.workers.filter(n => n != name);
+	this.memory.carriers = this.memory.carriers.filter(n => n != name);
+	this.memory.harvesters = this.memory.harvesters.filter(n => n != name);
+	this.memory.builders = this.memory.builders.filter(n => n != name);
+	this.memory.guards = this.memory.guards.filter(n => n != name);
+	this.memory.healers = this.memory.healers.filter(n => n != name);
 }
 
 Spawn.prototype.selectSource = /** @return Source */ function()
@@ -50,8 +57,10 @@ Spawn.prototype.think = function()
 		if(this.canCreateCreep(workerParts) == OK)
 		{
 			var targetSource = this.selectSource();
+			var cycle = this.memory.workers.length % 4;
+			var job = cycle == 2 ? "upgrade" : cycle == 3 ? "build" : "source";
 			var workerName = this.createCreep(workerParts,
-					{"role": role, "job": this.memory.workers.length % 4 == 3 ? "upgrade" : "source", "jobid": targetSource.id, "homeid":  this.id});
+					{"role": role, "job": job, "sourceid": targetSource.id, "homeid":  this.id});
 
 			if (typeof workerName === "string")
 			{

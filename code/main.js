@@ -1,4 +1,4 @@
-//Version 2.0
+//Version 2.0 local
 
 require('creep_ex');
 require('spawn_ex');
@@ -13,15 +13,55 @@ module.exports.loop = function ()
 	for(var name in Memory.creeps)
 	{
 		var creep = Game.creeps[name];
-        if(!creep) {
-            delete Memory.creeps[name];
-            spawn.forget(creep);
-            console.log('Clearing non-existing creep memory:', name);
-            continue;
-        }
+		if(!creep) {
+			spawn.forget(name);
+			delete Memory.creeps[name];
+			console.log('Clearing non-existing creep memory:', name);
+		}
+	}
+    for(var name in Game.creeps) {
+        var creep = Game.creeps[name];
 
 		if(creep.spawning) continue;
 
 		creep.doRole();
+	}
+}
+
+
+cleanLists = function (spawn) 
+{
+    var filter = function(val, n, a){ Memory.creeps.keys.includes(val)};
+	spawn.memory.workers = spawn.memory.workers.filter(filter);
+	spawn.memory.carriers = spawn.memory.guards.filter(filter);
+	spawn.memory.harvesters = spawn.memory.healers.filter(filter);
+	spawn.memory.builders = spawn.memory.healers.filter(filter);
+	spawn.memory.guards = spawn.memory.healers.filter(filter);
+	spawn.memory.healers = spawn.memory.healers.filter(filter);
+}
+fillLists = function (spawn) 
+{
+	spawn.memory.workers = [];
+	spawn.memory.carriers = [];
+	spawn.memory.harvesters = [];
+	spawn.memory.builders = [];
+	spawn.memory.guards = [];
+	spawn.memory.healers = [];
+	
+	for(var name in Memory.creeps)
+	{
+		var creep = Game.creeps[name];
+		if(creep)
+		{
+        	switch(creep.memory.role)
+        	{
+        		case "worker": spawn.memory.workers.push(name); break;
+        		case "carrier": spawn.memory.carriers.push(name); break;
+        		case "harvester": spawn.memory.harvesters.push(name); break;
+        		case "builder": bspawn.memory.builders.push(name); break;
+        		case "guard": spawn.memory.guards.push(name); break;
+        		case "healer": spawn.memory.healers.push(name); break;
+        	}
+		}
 	}
 }
