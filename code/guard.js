@@ -16,8 +16,9 @@ module.exports = function (/** @type Creep*/ creep)
 	//Return Home
 	else
 	{
-		var /** @type Spawn */ spawn = Game.getObjectById(creep.memory.homeid);
-		if(creep.pos.getRangeTo(spawn) > 3)
-			creep.moveTo(spawn);
+	    var post = Game.flags.Guardpost != null ? Game.flags.Guardpost
+	        : Game.getObjectById(creep.memory.homeid);
+		if(creep.pos.getRangeTo(post) > 3)
+			creep.moveTo(post);
 	}
 }

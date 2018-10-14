@@ -8,10 +8,15 @@ module.exports.loop = function ()
 
 	spawn.init();
 	spawn.think();
-
-	for(var name in Game.creeps)
+	for(var name in Memory.creeps)
 	{
 		var creep = Game.creeps[name];
+        if(!creep) {
+            delete Memory.creeps[name];
+            spawn.forget(creep);
+            console.log('Clearing non-existing creep memory:', name);
+            continue;
+        }
 
 		if(creep.spawning) continue;
 

@@ -13,6 +13,13 @@ Spawn.prototype.init = function()
 	this.memory.healers = [];
 }
 
+Spawn.prototype.forget = function(creep)
+{
+    this.memory.workers = this.memory.workers.filter(function(val, n, a){ return val != creep});
+    this.memory.guards = this.memory.guards.filter(function(val, n, a){ return val != creep});
+    this.memory.healers = this.memory.healers.filter(function(val, n, a){ return val != creep});
+}
+
 Spawn.prototype.selectSource = /** @return Source */ function()
 {
 	var targetSource = this.pos.findClosestByRange(FIND_SOURCES);
@@ -44,7 +51,7 @@ Spawn.prototype.think = function()
 		{
 			var targetSource = this.selectSource();
 			var workerName = this.createCreep(workerParts,
-					{"role": role, "job": "source", jobid: targetSource.id, "homeid": this.id});
+					{"role": role, "job": this.memory.workers.length % 4 == 3 ? "upgrade" : "source", "jobid": targetSource.id, "homeid":  this.id});
 
 			if (typeof workerName === "string")
 			{
