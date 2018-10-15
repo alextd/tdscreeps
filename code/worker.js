@@ -16,50 +16,26 @@ module.exports = function (creep)
 				return;
 			}
 			else if(creep.memory.job == "source")
-			{
 				creep.memory.job = "fill";
-				
-				var targets = creep.room.find(FIND_STRUCTURES, {
-					filter: (structure) => {
-						return (structure.structureType == STRUCTURE_EXTENSION ||
-							structure.structureType == STRUCTURE_SPAWN ||
-							structure.structureType == STRUCTURE_TOWER) && structure.energy < structure.energyCapacity;
-						}
-					});
-				if(targets.length > 0)
-					creep.memory.fillid = targets[0].id;
-			}
 			else if(creep.memory.job == "upgrade")
 				creep.memory.job = "upgrading";
 			else if(creep.memory.job == "build")
-			{
 				creep.memory.job = "building";
-				
-				var sites = creep.room.find(FIND_CONSTRUCTION_SITES);
-				if(sites.length)
-				{
-					creep.memory.siteid = sites[0].id;
-				}
-			}
 	}
 	
 	//step2
 	switch(creep.memory.job)
 	{
 		case "fill":
-			var targetid = creep.memory.fillid ? creep.memory.fillid : creep.memory.homeid;
-			var target = Game.getObjectById(targetid);
+			var target = findFillTarget(creep)
 			
 			var result = creep.transfer (target, RESOURCE_ENERGY);
 			if(result == ERR_NOT_IN_RANGE)
 			{
 				creep.moveTo(target, {visualizePathStyle: {stroke: '#ffff80'}});
 			}
-			else if(result == OK)
-			{
+			if (creep.carry.energy == 0)
 				creep.memory.job = "source";
-				delete creep.memory.fillid;
-			}
 			break;
 		case "upgrading":
 			
@@ -70,19 +46,11 @@ module.exports = function (creep)
 				creep.memory.job = "upgrade";
 			break;
 		case "building":
-			var target = Game.getObjectById(creep.memory.siteid);
-			if(!target)
-			{
-				var sites = creep.room.find(FIND_CONSTRUCTION_SITES);
-				if(sites.length)
-				{
-					target = sites[0];
-					creep.memory.siteid = target.id;
-				}
-			}
+			var target = findBuildTarget(creep)
 			if(target)
 			{
-				if(creep.build(target) == ERR_NOT_IN_RANGE)
+				if(creep.build(target) == ERR_NOT_IN_RANGE ||
+				creep.repair(target) == ERR_NOT_IN_RANGE)
 				{
 					creep.moveTo(target, {visualizePathStyle: {stroke: '#80ff80'}});
 				}
@@ -94,3 +62,53 @@ module.exports = function (creep)
 	}
 
 };
+function findFillTarget(creep)
+{
+	var target = Game.getObjectById(creep.memory.targetid);
+	if(target && target.energy < target.energyCapacity)
+		return target;
+	
+				
+	var targets = creep.room.find(FIND_STRUCTURES, {
+		filter: (structure) => {
+			return (structure.structureType == STRUCTURE_EXTENSION ||
+				structure.structureType == STRUCTURE_SPAWN ||
+				structure.structureType == STRUCTURE_TOWER) && 
+				structure.energy < structure.energyCapacity;
+			}
+		});
+	if(targets.length)
+	{
+		creep.memory.targetid = targets[0].id;
+		return targets[0];
+	}
+	
+	delete creep.memory.targetid;
+	return null;
+}
+
+function findBuildTarget(creep)
+{
+	var target = Game.getObjectById(creep.memory.targetid);
+	if (target)
+		return target;
+	
+	var damaged = creep.room.find(FIND_STRUCTURES, {
+    filter: object => object.hits < object.hitsMax
+	});
+	if(damaged.length)
+	{
+		creep.memory.targetid = damaged[0].id;
+		return damaged[0];
+	}
+	
+	var sites = creep.room.find(FIND_CONSTRUCTION_SITES);
+	if(sites.length)
+	{
+		creep.memory.targetid = sites[0].id;
+		return sites[0];
+	}
+	
+	delete creep.memory.targetid;
+	return null;
+}
