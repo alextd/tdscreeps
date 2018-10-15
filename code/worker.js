@@ -90,7 +90,9 @@ function findFillTarget(creep)
 function findBuildTarget(creep)
 {
 	var target = Game.getObjectById(creep.memory.targetid);
-	if (target)
+	if (target &&
+		(target.progress < target.progressTotal || 
+			target.hits < target.hitsMax))
 		return target;
 	
 	var damaged = creep.room.find(FIND_STRUCTURES, {
