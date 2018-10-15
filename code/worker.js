@@ -88,7 +88,7 @@ module.exports = function (creep)
 				}
 			}
 			else 
-				creep.moveTo(Game.flags.Guardpost);
+				creep.moveTo(Game.flags.Wait);
 			if (creep.carry.energy == 0)
 				creep.memory.job = "build";
 	}
