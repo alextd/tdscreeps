@@ -5,10 +5,8 @@ var builder = require('builder');
 var guard = require('guard');
 var healer = require('healer');
 
-Creep.prototype.doRole = function()
-{
-	switch(this.memory.role)
-	{
+Creep.prototype.doRole = function () {
+	switch (this.memory.role) {
 		case "worker": worker(this); break;
 		case "carrier": carrier(this); break;
 		case "harvester": harvester(this); break;

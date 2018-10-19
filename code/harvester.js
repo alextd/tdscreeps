@@ -1,12 +1,9 @@
-module.exports = function (creep)
-{
-	if(creep.carry.energy < creep.carryCapacity)
-	{
+module.exports = function (creep) {
+	if (creep.carry.energy < creep.carryCapacity) {
 		var sources = creep.room.find(FIND_SOURCES);
-		if(creep.harvest(sources[0]) == ERR_NOT_IN_RANGE)
-		{
+		if (creep.harvest(sources[0]) == ERR_NOT_IN_RANGE) {
 			creep.moveTo(sources[0]);
-		}			
+		}
 	}
 	//TODO
 }
