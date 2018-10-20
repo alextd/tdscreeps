@@ -56,7 +56,8 @@ module.exports = function (creep) {
 };
 function findFillTarget(creep) {
 	var target = Game.getObjectById(creep.memory.targetid);
-	if (target && target.energy < target.energyCapacity)
+	if (target && target != undefined && 
+			target.energy < target.energyCapacity)
 		return target;
 
 
@@ -77,10 +78,10 @@ function findFillTarget(creep) {
 	return null;
 }
 
-function findBuildTarget(creep) {
+function findBuildTarget( creep) {
 	var target = Game.getObjectById(creep.memory.targetid);
-	if (target &&
-		(target.progress < target.progressTotal ||
+	if (target && target != undefined && 
+			(target.progress < target.progressTotal ||
 			target.hits < target.hitsMax))
 		return target;
 
@@ -90,6 +91,12 @@ function findBuildTarget(creep) {
 	if (damaged.length) {
 		creep.memory.targetid = damaged[0].id;
 		return damaged[0];
+	}
+
+	var sites = creep.room.find(FIND_CONSTRUCTION_SITES, { filter: s => s.structureType == STRUCTURE_CONTAINER });
+	if (sites.length) {
+		creep.memory.targetid = sites[0].id;
+		return sites[0];
 	}
 
 	var sites = creep.room.find(FIND_CONSTRUCTION_SITES);

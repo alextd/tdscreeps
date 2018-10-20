@@ -32,6 +32,9 @@ Spawn.prototype.forget = function (name) {
 }
 
 Spawn.prototype.selectSource = /** @return Source */ function () {
+
+	var level = this.room.controller.level;
+
 	var targetSource = this.pos.findClosestByRange(FIND_SOURCES);
 	if (this.memory.sources[targetSource.id] == undefined)
 		this.memory.sources[targetSource.id] = [];
@@ -41,6 +44,9 @@ Spawn.prototype.selectSource = /** @return Source */ function () {
 Spawn.prototype.think = function () {
 	//can we spawn
 	if (this.spawning != null) return;
+	
+	var level = this.room.controller.level;
+
 
 	//decide it
 	var role = "worker";

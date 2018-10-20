@@ -1,13 +1,11 @@
-//Version 2.0 local
-
 require('creep_ex');
 require('spawn_ex');
 
 module.exports.loop = function () {
 	//console.log(`Current game tick is ${Game.time}`);
 
-	var /** @type Room */  room = Game.rooms[Object.keys(Game.rooms)[0]];
-	var /** @type Spawn */ spawn = room.find(FIND_MY_SPAWNS)[0];
+	var room = Game.rooms[Object.keys(Game.rooms)[0]];
+	var spawn = room.find(FIND_MY_SPAWNS)[0];
 
 	spawn.init();
 	spawn.think();
