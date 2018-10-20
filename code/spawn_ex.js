@@ -2,7 +2,7 @@ var workerParts = [MOVE, WORK, WORK, CARRY];
 var guardParts = [TOUGH, TOUGH, TOUGH, TOUGH, MOVE, MOVE, ATTACK, ATTACK];
 var healerParts = [MOVE, HEAL];
 
-Spawn.prototype.init = function () {
+StructureSpawn.prototype.init = function () {
 	if (this.memory.init) return;
 
 	this.memory.init = true;
@@ -19,7 +19,7 @@ Spawn.prototype.init = function () {
 		this.memory.sources[source.id] = [];
 	}
 }
-Spawn.prototype.forget = function (name) {
+StructureSpawn.prototype.forget = function (name) {
 	this.memory.workers = this.memory.workers.filter(n => n != name);
 	this.memory.carriers = this.memory.carriers.filter(n => n != name);
 	this.memory.harvesters = this.memory.harvesters.filter(n => n != name);
@@ -31,7 +31,7 @@ Spawn.prototype.forget = function (name) {
 	}
 }
 
-Spawn.prototype.selectSource = /** @return Source */ function () {
+StructureSpawn.prototype.selectSource = /** @return Source */ function () {
 
 	var level = this.room.controller.level;
 
@@ -41,7 +41,7 @@ Spawn.prototype.selectSource = /** @return Source */ function () {
 	return targetSource;
 }
 
-Spawn.prototype.think = function () {
+StructureSpawn.prototype.think = function () {
 	//can we spawn
 	if (this.spawning != null) return;
 	
